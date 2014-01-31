@@ -1,6 +1,6 @@
-//we want to give this new campaign a good chance of success
-//so we are setting all the new keywords at top of page cpc
-//that way they will have a chance to show their performance
+//this is a script to manage nonbrand keywords
+//that are good quality that we want to keep their bid
+//a bit above the top of page cpc but not too high above
 
 //bid adjustments for various max bids
 //we do this because x% of $10 is a bigger absolute dollar value than x% of $0.05
@@ -22,6 +22,8 @@ function main() {
       .withCondition("AdGroupStatus = ENABLED")
       .withCondition("LabelNames CONTAINS_NONE ['brand-keyword']")
       .withCondition("Status = ACTIVE")
+	  //only select keywords with decent quality score
+	  .withCondition("QualityScore >= 5")
       .get();
   
   
