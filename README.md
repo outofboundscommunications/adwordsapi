@@ -1,4 +1,0 @@
-adwordsapi
-==========
-
-adwordsAPI
