@@ -78,21 +78,6 @@ function main() {
 		  var sheet = spreadsheet.getSheetByName('camp_perf_mtd');
 		  //clear contents of sheet while preserving formatting
 		  sheet.clearContents();
-		  
-		   // Write header row.
-		  sheet.getRange("A1").setValue("Reporting Date");
-		  sheet.getRange("B1").setValue("Campaign Name");
-		  sheet.getRange("C1").setValue("Campaign Status");
-		  sheet.getRange("D1").setValue("Clicks");
-		  sheet.getRange("E1").setValue("Click Type");
-		  sheet.getRange("F1").setValue("Impressions");
-		  sheet.getRange("G1").setValue("Ctr");
-		  sheet.getRange("H1").setValue("Average Cpc");
-		  sheet.getRange("I1").setValue("Cost");
-		  sheet.getRange("J1").setValue("Average Position");
-		  sheet.getRange("K1").setValue("Conversions");
-		  sheet.getRange("L1").setValue("Conversion Rate");
-		  sheet.getRange("M1").setValue("Cost Per Conversion");
 		  //write to sheet
 		  for (var i = 0; i < myCampaignArray.length; i++) {
 			var row = i+2;

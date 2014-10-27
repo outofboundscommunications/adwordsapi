@@ -2,7 +2,9 @@
 //and appends the new campaign level records to the desired google sheet
 
 // Comma-separated list of recipients.
-var RECIPIENT_EMAIL = 'jayw@outofboundscommunications.com';
+var RECIPIENT_EMAIL_1 = 'jayw@outofboundscommunications.com';
+var RECIPIENT_EMAIL_2 = 'danielf.kim@gmail.com';
+
 // Spreadsheet template.
 var SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1WpqdJOpdxUlDXNgqpgQq7Zgi1U8GxjnQy5egG-u5YMc/edit?usp=sharing';
 
@@ -111,8 +113,15 @@ function main() {
 				sheet.getRange("M" + row).setValue(myCampaignArray[i].CostPerConversion);
 		}
   //send email to notify user report is ready
-	 //MailApp.sendEmail(
-	  // RECIPIENT_EMAIL, 'New Campaign Report for Eye Associates is ready.', spreadsheet.getUrl());
+	  //send email to notify user report is ready
+    
+    if (RECIPIENT_EMAIL_1)  {
+      MailApp.sendEmail(RECIPIENT_EMAIL_1, 'New Campaign Performance Report for EA MTD is ready.', spreadsheet.getUrl());
+     }
+    
+    if (RECIPIENT_EMAIL_2)  {
+      MailApp.sendEmail(RECIPIENT_EMAIL_2, 'New Campaign Performance Report for EA MTD is ready.', spreadsheet.getUrl());
+     }
 
   //log notifications to console
 	  Logger.log("Report ready! Visit the following URL to see it:");

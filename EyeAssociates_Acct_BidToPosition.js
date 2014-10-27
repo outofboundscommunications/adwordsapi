@@ -1,7 +1,11 @@
-//finds keywords whose average position is too low, and increases their bids.
+//1. select all the nonbrand labeled keywords that dont meet target position
+//1a.
 
 // Ad position we are trying to achieve.
 var TARGET_AVERAGE_POSITION = 2;
+
+// another ad position we are trying to achieve for 'broad keywords'
+var BROAD_AVERAGE_POSITION = 4;
 
 // Once the keywords fall within TOLERANCE of TARGET_AVERAGE_POSITION,
 // their bids will no longer be adjusted.
@@ -9,6 +13,9 @@ var TOLERANCE = 0.1;
 
 // How much to adjust the bids.
 var BID_ADJUSTMENT_COEFFICIENT = 1.02;
+
+// another bid adjustment that is for 'broad keywords' that need to be moved quicker
+var BID_ADJUSTMENT_COEFFICIENT = 1.03;
 
 function main() {
   // Get the EA account by ID
@@ -23,10 +30,12 @@ function main() {
     // Select the client account to operate on.
     MccApp.select(account);
     // Call function to select keywords with poor position and bid higher
-    raiseKeywordBids();
+   // raiseKeywordBids();
     // Call function to select keywords with good position and bid lower
     //NOTE: added by jay wilner 10.8.2014 - turn on the bid adjustment downward
-    lowerKeywordBids();
+    //lowerKeywordBids();
+	
+	//select all the nonbrand keywords
   }
   
 }
@@ -40,6 +49,8 @@ function main() {
     .withCondition("Status = ENABLED")
      //select only non-brand keywords
     .withCondition("LabelNames CONTAINS_NONE ['brand-keyword']")
+	// and dont select the broad labeled keywords
+	.withCondition("LabelNames CONTAINS_NONE ['broadkeywordposition4']")
     .withCondition("AveragePosition > " + (TARGET_AVERAGE_POSITION + TOLERANCE))
     .orderBy("AveragePosition ASC")
     .forDateRange("LAST_7_DAYS")
@@ -53,7 +64,7 @@ function main() {
       //get stats for keyword
       var stats = keyword.getStatsFor("LAST_7_DAYS");
       keyword.setMaxCpc(keyword.getMaxCpc() * BID_ADJUSTMENT_COEFFICIENT);
-      Logger.log('keyword is: ' + keyword.getText() + ' current position is: ' + stats.getAveragePosition());
+      Logger.log('keyword is: ' + keyword.getText() + ' current position is: ' + stats.getAveragePosition() + 'cmpg is:');
     }
   }
 
@@ -65,6 +76,8 @@ function lowerKeywordBids() {
     .withCondition("CampaignStatus = ENABLED")
     //select only non-brand keywords
     .withCondition("LabelNames CONTAINS_NONE ['brand-keyword']")
+	// and dont select the broad labeled keywords
+	.withCondition("LabelNames CONTAINS_NONE ['broadkeywordposition4']")
     //.withCondition("Ctr > 0.01")
     .withCondition("AveragePosition < " + (TARGET_AVERAGE_POSITION - TOLERANCE))
     .withCondition("Status = ENABLED")
