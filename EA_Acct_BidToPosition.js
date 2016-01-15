@@ -1,17 +1,17 @@
 //finds keywords whose average position is too low, and increases their bids.
 
 // Spreadsheet template where we write the bid changes.
-var SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/19c5uzgN_P0lw8HoGQy6FSXuXActtvSLENY14JsnoDo4/edit?usp=sharing';
+var SPREADSHEET_URL = 'https://docs.google.com/spreadsheets/d/1g4UKvlDqjQxjcqL_HkyAUgtNDVlvMvMsQvcYN0quBJ4/edit?usp=sharing';
 
 // Ad position we are trying to achieve.
 var TARGET_AVERAGE_POSITION = 4;
 
 // Once the keywords fall within TOLERANCE of TARGET_AVERAGE_POSITION,
 // their bids will no longer be adjusted.
-var TOLERANCE = 0.1;
+var TOLERANCE = 0.2;
 
 // How much to adjust the bids.
-var BID_ADJUSTMENT_COEFFICIENT = 1.02;
+var BID_ADJUSTMENT_COEFFICIENT = 1.03;
 
 //create constructor to hold bid/keyword object
 
@@ -36,7 +36,7 @@ var bidChangesArray =[];
 function main() {
   // Get an account
   var accountSelector = MccApp.accounts()
-    .withIds(['451-726-4218']);
+    .withIds(['562-138-7680']);
   
   // Get current account I want
   var accountIterator = accountSelector.get();
@@ -66,7 +66,7 @@ function main() {
     .withCondition("Status = ENABLED")
     .withCondition("AveragePosition > " + (TARGET_AVERAGE_POSITION + TOLERANCE))
     .orderBy("AveragePosition ASC")
-    .forDateRange("LAST_7_DAYS")
+    .forDateRange("YESTERDAY")
     .get();
     
     // Log number of keywords in object
@@ -91,12 +91,14 @@ function main() {
 	  var myBidType = 'raise';
 	  
 	  //now go ahead and adjust the bid
-      //keyword.setMaxCpc(myMaxCpc* BID_ADJUSTMENT_COEFFICIENT);
+      keyword.setMaxCpc(myMaxCpc* BID_ADJUSTMENT_COEFFICIENT);
+      var newMaxCpc = myMaxCpc* BID_ADJUSTMENT_COEFFICIENT;
 	  
 	  //log a few of these changes
-      Logger.log('keyword is: ' + myText + 'campaign is: ' + myCmpgName + 'ad group is: ' + myAdGrpName + ' current position is: ' + stats.getAveragePosition());
+      Logger.log('keyword is: ' + myText + 'campaign is: ' + myCmpgName + 'ad group is: ' + myAdGrpName + ' current position is: ' + stats.getAveragePosition() +
+        'current max cpc is: ' + myMaxCpc + ' new max cpc is: ' + newMaxCpc);
 	  //store bid change in object
-	  var myBidChange = new BidChange(myCmpgName,myAdGrpName,myText,myMaxCpc,myQS,myTopPageCpc,myImpr,myClicks,myPos,myCpc,myBidType);
+	  var myBidChange = new BidChange(myCmpgName,myAdGrpName,myText,newMaxCpc,myQS,myTopPageCpc,myImpr,myClicks,myPos,myCpc,myBidType);
 	  // & push to array
       bidChangesArray.push(myBidChange);
     }
@@ -111,7 +113,7 @@ function main() {
     .withCondition("AveragePosition < " + (TARGET_AVERAGE_POSITION - TOLERANCE))
     .withCondition("Status = ENABLED")
     .orderBy("AveragePosition DESC")
-    .forDateRange("LAST_7_DAYS")
+    .forDateRange("YESTERDAY")
     .get();
 
    // Log number of keywords in object
@@ -136,12 +138,14 @@ function main() {
 	  var myBidType = 'lower';
 	  
 	  //now go ahead and adjust the bid (we divide current bid by coefficient here)
-      //keyword.setMaxCpc(myMaxCpc/BID_ADJUSTMENT_COEFFICIENT);
+      keyword.setMaxCpc(myMaxCpc/BID_ADJUSTMENT_COEFFICIENT);
+      var newMaxCpc = myMaxCpc/BID_ADJUSTMENT_COEFFICIENT;
 	  
-	  //log a few of these changes
-       Logger.log('keyword is: ' + myText + 'campaign is: ' + myCmpgName + 'ad group is: ' + myAdGrpName + ' current position is: ' + stats.getAveragePosition());
+	   //log a few of these changes
+      Logger.log('keyword is: ' + myText + 'campaign is: ' + myCmpgName + 'ad group is: ' + myAdGrpName + ' current position is: ' + stats.getAveragePosition() +
+        'current max cpc is: ' + myMaxCpc + ' new max cpc is: ' + newMaxCpc);
 	  //store bid change in object
-	  var myBidChange = new BidChange(myCmpgName,myAdGrpName,myText,myMaxCpc,myQS,myTopPageCpc,myImpr,myClicks,myPos,myCpc,myBidType);
+	  var myBidChange = new BidChange(myCmpgName,myAdGrpName,myText,newMaxCpc,myQS,myTopPageCpc,myImpr,myClicks,myPos,myCpc,myBidType);
 	  // & push to array
       bidChangesArray.push(myBidChange);
     }
@@ -151,7 +155,7 @@ function main() {
 function writeBidChanges()	{
   //open spreadsheet by url
   var spreadsheet = SpreadsheetApp.openByUrl(SPREADSHEET_URL);
-  // fetch the sheet for cmpg perf last 7 days
+  // fetch the sheet for storing changes
   var sheet = spreadsheet.getSheetByName('KeywordsBids');
   
    //create a variable for today to time stamp when we ran report
