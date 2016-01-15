@@ -1,0 +1,18 @@
+
+function DeleteRougeSheets() {
+// The code below deletes the specified sheet.
+ var ss = SpreadsheetApp.openByUrl("https://docs.google.com/a/outofboundscommunications.com/spreadsheets/d/1cLC-ojc5fjhoPO2_ZPPckKlX2gIUcXn9tfg8wAQEToA/edit#gid=1844077563")
+ var mySheets = ss.getSheets();
+ for (i=0;i<mySheets.length;i++) {
+  Logger.log('the sheet name is: ' + mySheets[i].getName());
+   var sheetName = mySheets[i].getName();
+   if (sheetName.indexOf("Copy")>-1) {
+     Logger.log("this sheet needs to be deleted");
+     ss = SpreadsheetApp.getActive();
+     var sheetToDelete = ss.getSheetByName(sheetName)
+     ss.deleteSheet(sheetToDelete);
+   }
+  }
+ }
+ //var sheet = ss.getSheetByName('My Sheet');
+// ss.deleteSheet(sheet);
